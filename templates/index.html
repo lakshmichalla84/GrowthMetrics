@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>AI-Powered Student Progress Report Generator</title>
+    <link rel="icon" type="image/x-icon" href="static/favicon.ico" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="header-div" class="pt-2 pb-2">
+      <img src="static/SpacECE logo.jpeg" alt="Logo" id="logo" />
+      <h1 class="text-center">AI-Powered Student Progress Report Generator</h1>
+    </div>
+
+    <div id="outer-div">
+      <div id="container-div">
+        <form id="report-form" action="{{ url_for('generate_report') }}" method="POST">
+          <label for="name">Name of the Student:</label>
+          <input type="text" id="name" name="name" required /> <br /><br />
+
+          <label for="age">Age of the Student:</label>
+          <select id="age" name="age">
+            <option value="">-- Select Age --</option>
+            <option value="1">1 Year</option>
+            <!-- <option value="1.5">1.5 Years</option> -->
+            <option value="2">2 Years</option>
+            <!-- <option value="2.5">2.5 Years</option> -->
+            <option value="3">3 Years</option>
+          </select>
+          <br /><br />
+
+          <label for="dob">Date of Birth (DOB):</label>
+          <input type="date" id="dob" name="dob" /> <br /><br />
+
+          <label for="class">Class of the Student:</label>
+          <input type="text" id="class" name="class" /> <br /><br />
+
+          <label for="doa">Date of Assessment:</label>
+          <input type="date" id="doa" name="doa" required /> <br /><br />
+
+          <label for="assessor">Name of the Assessor:</label>
+          <input type="text" id="assessor" name="assessor" required /> <br /><br />
+
+          <label for="env">Environment:</label>
+          <select name="env" id="env" required>
+            <option value="">-- Please choose an option --</option>
+            <option value="0">Home</option>
+            <option value="1">Daycare</option>
+            <option value="2">Other</option>
+          </select>
+          <br /><br />
+
+          <div id="add-milestone-div">
+            <label>Milestones:</label>
+            <button type="button" id="add-milestone-btn">Add Milestones</button>
+          </div>
+
+          <div id="milestone-container"></div>
+
+          <p>Summary of Developemental Status</p>
+
+          <label class="radio_label">Overall Developement Progress:</label><br />
+          <input type="radio" class="radio" id="ontrack" value="0" name="delay" required />
+          <label class="radio_label" for="ontrack">On track</label> <br />
+          <input type="radio" class="radio" id="slight" value="1" name="delay" />
+          <label class="radio_label" for="slight">Slight Delay</label> <br />
+          <input type="radio" class="radio" id="significant" value="2" name="delay" />
+          <label class="radio_label" for="significant">Significant Delay</label> <br /><br />
+
+          <label for="comments">Comments on delays (if any):</label>
+          <textarea id="comments" name="comments" placeholder="Comments on delays...." rows="1" cols="50"></textarea> <br /><br />
+
+          <label for="next_date">Next assessment date:</label>
+          <input type="date" id="next_date" name="next_date" /><br /><br />
+
+          <button type="submit" id="submit-btn">Generate Report</button>
+        </form>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js')}}"></script>
+  </body>
+</html>
