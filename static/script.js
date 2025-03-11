@@ -1,268 +1,331 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const ageDropdown = document.getElementById("age");
-    const milestoneContainer = document.getElementById("milestone-container");
-    const addMilestoneBtn = document.getElementById("add-milestone-btn");
-    const form = document.getElementById("report-form");
-    const submitButton = form.querySelector("button[type='submit']");
-    const originalButtonText = submitButton.innerHTML;
-    let allMilestones = {}; // Store all milestones from the API
-    let selectedMilestones = {}; // Track milestones in the form
+  const ageDropdown = document.getElementById("age");
+  const milestoneContainer = document.getElementById("milestone-container");
+  const addMilestoneBtn = document.getElementById("add-milestone-btn");
+  const form = document.getElementById("report-form");
+  const submitButton = form.querySelector("button[type='submit']");
+  const originalButtonText = submitButton.innerHTML;
+  let allMilestones = {}; // Store all milestones from the API
+  let selectedMilestones = {}; // Track milestones in the form
 
-    // Fetch milestones when age changes
-    ageDropdown.addEventListener("change", function () {
-        const selectedAge = ageDropdown.value;
-        milestoneContainer.innerHTML = ""; // Clear previous milestones
-    
-        if (selectedAge) {
-            fetch(`/get_milestones?age=${selectedAge}`)
-                .then(response => response.json())
-                .then(data => {
-                    allMilestones = data.milestones; // Store all milestones
-                    selectedMilestones = {}; // Reset selected milestones
-                    
-                    if (Object.keys(allMilestones).length > 0) {
-                        Object.keys(allMilestones).forEach(area => {
-                            selectedMilestones[area] = []; // Initialize empty list
-                            
-                            // Create area section
-                            const areaSection = document.createElement("div");
-                            areaSection.classList.add("area-section");
-                            areaSection.setAttribute("data-area", area);
+  // Fetch milestones when age changes
+  ageDropdown.addEventListener("change", function () {
+    const selectedAge = ageDropdown.value;
+    milestoneContainer.innerHTML = ""; // Clear previous milestones
 
-                            // Area title
-                            const areaHeader = document.createElement("p");
-                            areaHeader.textContent = `${area}:`;
-                            areaHeader.classList.add("development-area");
+    if (selectedAge) {
+      fetch(`/get_milestones?age=${selectedAge}`)
+        .then((response) => response.json())
+        .then((data) => {
+          allMilestones = data.milestones; // Store all milestones
+          selectedMilestones = {}; // Reset selected milestones
 
-                            // Milestone container
-                            const milestonesContainer = document.createElement("div");
-                            milestonesContainer.classList.add("area-milestones");
+          if (Object.keys(allMilestones).length > 0) {
+            Object.keys(allMilestones).forEach((area) => {
+              selectedMilestones[area] = []; // Initialize empty list
 
-                            // Append elements
-                            areaSection.appendChild(areaHeader);
-                            areaSection.appendChild(milestonesContainer);
-                            milestoneContainer.appendChild(areaSection);
+              // Create area section
+              const areaSection = document.createElement("div");
+              areaSection.classList.add("area-section");
+              areaSection.setAttribute("data-area", area);
 
-                            // Add initial milestones (up to 5)
-                            allMilestones[area].slice(0, 5).forEach(milestone => {
-                                addMilestoneToForm(area, milestone);
-                            });
-                        });
-                    } else {
-                        milestoneContainer.innerHTML = "<p>No milestones available for this age.</p>";
-                    }
-                })
-                .catch(error => {
-                    console.error("Error fetching milestones:", error);
-                    milestoneContainer.innerHTML = "<p>Failed to load milestones.</p>";
-                });
-        }
-    });
+              // Area title
+              const areaHeader = document.createElement("p");
+              areaHeader.textContent = `${area}:`;
+              areaHeader.classList.add("development-area");
 
-    // Add Milestone Modal
-    addMilestoneBtn.addEventListener("click", function () {
-        const modalContent = document.createElement("div");
-        modalContent.classList.add("milestone-modal-content");
+              // Milestone container
+              const milestonesContainer = document.createElement("div");
+              milestonesContainer.classList.add("area-milestones");
 
-        Object.keys(allMilestones).forEach((area, index) => {
-            if (index > 0) {
-                modalContent.appendChild(document.createElement("br"));
-            }
+              // Append elements
+              areaSection.appendChild(areaHeader);
+              areaSection.appendChild(milestonesContainer);
+              milestoneContainer.appendChild(areaSection);
 
-            const categoryDiv = document.createElement("div");
-            categoryDiv.style.marginTop = "10px";
-
-            // Create title
-            const areaTitle = document.createElement("span");
-            areaTitle.textContent = area;
-            areaTitle.style.fontWeight = "bold"; 
-
-            categoryDiv.appendChild(areaTitle);
-            
-            categoryDiv.appendChild(document.createElement("br"));
-            categoryDiv.appendChild(document.createElement("br"));
-
-            // Filter out milestones already in the form
-            const availableMilestones = allMilestones[area].filter(milestone => 
-                !selectedMilestones[area] || !selectedMilestones[area].includes(milestone)
-            );
-
-            availableMilestones.forEach(milestone => {
-                const milestoneDiv = document.createElement("div");
-                milestoneDiv.classList.add("milestone-option");
-                milestoneDiv.innerHTML = 
-                    `<span>${milestone}</span>
-                    <button type="button" class="add-milestone-btn">+</button>`
-                ;
-
-                // Add event listener to add milestone to form
-                milestoneDiv.querySelector(".add-milestone-btn").addEventListener("click", function (e) {
-                    e.preventDefault();
-                    addMilestoneToForm(area, milestone);
-                    milestoneDiv.remove(); // Remove from modal
-                });
-
-                categoryDiv.appendChild(milestoneDiv);
+              // Add initial milestones (up to 5)
+              allMilestones[area].slice(0, 5).forEach((milestone) => {
+                addMilestoneToForm(area, milestone);
+              });
             });
-
-            modalContent.appendChild(categoryDiv);
+          } else {
+            milestoneContainer.innerHTML =
+              "<p>No milestones available for this age.</p>";
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching milestones:", error);
+          milestoneContainer.innerHTML = "<p>Failed to load milestones.</p>";
         });
+    }
+  });
 
-        showModal(modalContent);
+  // Add Milestone Modal
+  addMilestoneBtn.addEventListener("click", function () {
+    const modalContent = document.createElement("div");
+    modalContent.classList.add("milestone-modal-content");
+
+    Object.keys(allMilestones).forEach((area, index) => {
+      if (index > 0) {
+        modalContent.appendChild(document.createElement("br"));
+      }
+
+      const categoryDiv = document.createElement("div");
+      categoryDiv.style.marginTop = "10px";
+
+      // Create title
+      const areaTitle = document.createElement("span");
+      areaTitle.textContent = area;
+      areaTitle.style.fontWeight = "bold";
+
+      categoryDiv.appendChild(areaTitle);
+
+      categoryDiv.appendChild(document.createElement("br"));
+      categoryDiv.appendChild(document.createElement("br"));
+
+      // Filter out milestones already in the form
+      const availableMilestones = allMilestones[area].filter(
+        (milestone) =>
+          !selectedMilestones[area] ||
+          !selectedMilestones[area].includes(milestone)
+      );
+
+      availableMilestones.forEach((milestone) => {
+        const milestoneDiv = document.createElement("div");
+        milestoneDiv.classList.add("milestone-option");
+        milestoneDiv.innerHTML = `<span>${milestone}</span>
+                    <button type="button" class="add-milestone-btn">+</button>`;
+
+        // Add event listener to add milestone to form
+        milestoneDiv
+          .querySelector(".add-milestone-btn")
+          .addEventListener("click", function (e) {
+            e.preventDefault();
+            addMilestoneToForm(area, milestone);
+            milestoneDiv.remove(); // Remove from modal
+          });
+
+        categoryDiv.appendChild(milestoneDiv);
+      });
+
+      modalContent.appendChild(categoryDiv);
     });
 
-    // Function to add a milestone to the form
-    function addMilestoneToForm(area, milestone) {
-        let areaSection = document.querySelector(`.area-section[data-area="${area}"]`);
+    showModal(modalContent);
+  });
 
-        // Create section if it doesn't exist
-        if (!areaSection) {
-            areaSection = document.createElement("div");
-            areaSection.classList.add("area-section");
-            areaSection.setAttribute("data-area", area);
+  // Function to add a milestone to the form
+  function addMilestoneToForm(area, milestone) {
+    let areaSection = document.querySelector(
+      `.area-section[data-area="${area}"]`
+    );
 
-            const areaHeader = document.createElement("p");
-            areaHeader.textContent = `${area}:`;
-            areaHeader.classList.add("development-area");
+    // Create section if it doesn't exist
+    if (!areaSection) {
+      areaSection = document.createElement("div");
+      areaSection.classList.add("area-section");
+      areaSection.setAttribute("data-area", area);
 
-            const milestonesContainer = document.createElement("div");
-            milestonesContainer.classList.add("area-milestones");
+      const areaHeader = document.createElement("p");
+      areaHeader.textContent = `${area}:`;
+      areaHeader.classList.add("development-area");
 
-            areaSection.appendChild(areaHeader);
-            areaSection.appendChild(milestonesContainer);
-            milestoneContainer.appendChild(areaSection);
-        }
+      const milestonesContainer = document.createElement("div");
+      milestonesContainer.classList.add("area-milestones");
 
-        const milestonesContainer = areaSection.querySelector(".area-milestones");
-
-        // Prevent duplicate addition
-        if (selectedMilestones[area] && selectedMilestones[area].includes(milestone)) {
-            return;
-        }
-
-        // Track milestone in form
-        if (!selectedMilestones[area]) {
-            selectedMilestones[area] = [];
-        }
-        selectedMilestones[area].push(milestone);
-
-        // Create milestone item
-        const milestoneDiv = document.createElement("div");
-        milestoneDiv.classList.add("milestone-item");
-
-        const label = document.createElement("label");
-        label.textContent = milestone;
-        label.classList.add("milestone-label");
-
-        const select = document.createElement("select");
-        select.name = "milestone_" + milestone.replace(/\s+/g, "_");
-        select.classList.add("milestone-select");
-        [1, 2, 3].forEach(num => {
-            const option = document.createElement("option");
-            option.value = num;
-            option.textContent = num;
-            select.appendChild(option);
-        });
-
-        const removeBtn = document.createElement("button");
-        removeBtn.type = "button";
-        removeBtn.classList.add("btn-close");
-        removeBtn.setAttribute("aria-label", "Close");
-        removeBtn.addEventListener("click", function (e) {
-            e.preventDefault();
-            milestoneDiv.remove();
-            selectedMilestones[area] = selectedMilestones[area].filter(m => m !== milestone);
-        });
-
-        milestoneDiv.appendChild(label);
-        milestoneDiv.appendChild(select);
-        milestoneDiv.appendChild(removeBtn);
-        milestonesContainer.appendChild(milestoneDiv);
+      areaSection.appendChild(areaHeader);
+      areaSection.appendChild(milestonesContainer);
+      milestoneContainer.appendChild(areaSection);
     }
 
-    // Function to show modal
-    function showModal(content) {
-        const existingModal = document.querySelector(".milestone-modal");
-        if (existingModal) existingModal.remove();
+    const milestonesContainer = areaSection.querySelector(".area-milestones");
 
-        const modal = document.createElement("div");
-        modal.classList.add("milestone-modal");
-
-        const modalOverlay = document.createElement("div");
-        modalOverlay.classList.add("milestone-modal-overlay");
-
-        const modalBox = document.createElement("div");
-        modalBox.classList.add("milestone-modal-box");
-
-        const stickyHeader = document.createElement("div");
-        stickyHeader.classList.add("sticky-header");
-
-        const closeButton = document.createElement("button");
-        closeButton.classList.add("btn-close");
-        closeButton.setAttribute("aria-label", "Close");
-        closeButton.addEventListener("click", function () {
-            modal.remove();
-        });
-
-        stickyHeader.appendChild(closeButton);
-        modalBox.appendChild(stickyHeader);
-        modalBox.appendChild(content);
-        modal.appendChild(modalOverlay);
-        modal.appendChild(modalBox);
-        document.body.appendChild(modal);
+    // Prevent duplicate addition
+    if (
+      selectedMilestones[area] &&
+      selectedMilestones[area].includes(milestone)
+    ) {
+      return;
     }
 
-    const submitBtn = document.getElementById("submit-btn");
+    // Track milestone in form
+    if (!selectedMilestones[area]) {
+      selectedMilestones[area] = [];
+    }
+    selectedMilestones[area].push(milestone);
 
-    // Set initial button content with hidden spinner
-    submitBtn.innerHTML = `
+    // Create milestone item
+    const milestoneDiv = document.createElement("div");
+    milestoneDiv.classList.add("milestone-item");
+
+    const label = document.createElement("label");
+    label.textContent = milestone;
+    label.classList.add("milestone-label");
+
+    const select = document.createElement("select");
+    select.name = "milestone_" + milestone.replace(/\s+/g, "_");
+    select.classList.add("milestone-select");
+    [1, 2, 3].forEach((num) => {
+      const option = document.createElement("option");
+      option.value = num;
+      option.textContent = num;
+      select.appendChild(option);
+    });
+
+    const removeBtn = document.createElement("button");
+    removeBtn.type = "button";
+    removeBtn.classList.add("btn-close");
+    removeBtn.setAttribute("aria-label", "Close");
+    removeBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      milestoneDiv.remove();
+      selectedMilestones[area] = selectedMilestones[area].filter(
+        (m) => m !== milestone
+      );
+    });
+
+    milestoneDiv.appendChild(label);
+    milestoneDiv.appendChild(select);
+    milestoneDiv.appendChild(removeBtn);
+    milestonesContainer.appendChild(milestoneDiv);
+  }
+
+  // Function to show modal
+  function showModal(content) {
+    const existingModal = document.querySelector(".milestone-modal");
+    if (existingModal) existingModal.remove();
+
+    const modal = document.createElement("div");
+    modal.classList.add("milestone-modal");
+
+    const modalOverlay = document.createElement("div");
+    modalOverlay.classList.add("milestone-modal-overlay");
+
+    const modalBox = document.createElement("div");
+    modalBox.classList.add("milestone-modal-box");
+
+    const stickyHeader = document.createElement("div");
+    stickyHeader.classList.add("sticky-header");
+
+    const closeButton = document.createElement("button");
+    closeButton.classList.add("btn-close");
+    closeButton.setAttribute("aria-label", "Close");
+    closeButton.addEventListener("click", function () {
+      modal.remove();
+    });
+
+    stickyHeader.appendChild(closeButton);
+    modalBox.appendChild(stickyHeader);
+    modalBox.appendChild(content);
+    modal.appendChild(modalOverlay);
+    modal.appendChild(modalBox);
+    document.body.appendChild(modal);
+  }
+
+  const submitBtn = document.getElementById("submit-btn");
+
+  // Set initial button content with hidden spinner
+  submitBtn.innerHTML = `
         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
         <span class="btn-text">Generate Report</span>
     `;
 
-    const spinner = submitBtn.querySelector(".spinner-border");
-    const btnText = submitBtn.querySelector(".btn-text");
+  const spinner = submitBtn.querySelector(".spinner-border");
+  const btnText = submitBtn.querySelector(".btn-text");
 
-    form.addEventListener("submit", function (event) {
-        event.preventDefault(); // Prevent default form submission
+  // ===================================
+  // Attach Preview Before Submit
+  // ===================================
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();
+    showPreviewAndConfirm();
+  });
 
-        // Disable button and show spinner
-        submitBtn.disabled = true;
-        spinner.style.display = "inline-block";
-        btnText.textContent = "Generating..."; // Change text
+  // ===================================
+  // Function to Preview the Form
+  // ===================================
+  function showPreviewAndConfirm() {
+    const name = document.getElementById("name").value;
+    const age = document.getElementById("age").value;
+    // const dob = document.getElementById("dob").value;
+    // const studentClass = document.getElementById("class").value;
+    const doa = document.getElementById("doa").value;
+    const assessor = document.getElementById("assessor").value;
+    const env = document.getElementById("env").value;
+    const comments = document.getElementById("comments").value;
+    const nextDate = document.getElementById("next_date").value;
 
-        // Use Fetch API to send the form data
-        const formData = new FormData(form);
-        const nameInput = document.getElementById("name").value.trim();
+    let milestoneSummary = "";
+    document.querySelectorAll(".area-section").forEach((section) => {
+      const areaName = section.getAttribute("data-area");
+      const milestones = section.querySelectorAll(".milestone-item");
 
-        fetch(form.action, {
-            method: form.method,
-            body: formData,
+      if (milestones.length > 0) {
+        milestoneSummary += `<br><br><strong>${areaName}:</strong><br><br>`;
+        milestones.forEach((item) => {
+          const milestoneText =
+            item.querySelector(".milestone-label").textContent;
+          const milestoneLevel = item.querySelector("select").value;
+          milestoneSummary += `- ${milestoneText} : <strong>  Level ${milestoneLevel}<br></strong>`;
+        });
+      }
+    });
+
+    const previewContent = `
+    <p><strong>Name:</strong> ${name}</p>
+    <p><strong>Age:</strong> ${age}</p>
+   
+    <p><strong>Date of Assessment:</strong> ${doa}</p>
+    <p><strong>Assessor Name:</strong> ${assessor}</p>
+    <p><strong>Environment:</strong> ${env}</p>
+    <p><strong>Next Assessment Date:</strong> ${nextDate}</p>
+    <p><strong>Comments:</strong> ${comments}</p><br>
+    <h4>Milestones</h4>
+    ${milestoneSummary || "No milestones added."}
+  `;
+
+    // Send data to new preview page
+    const previewWindow = window.open(
+      `/preview?data=${encodeURIComponent(JSON.stringify({ previewContent }))}`,
+      "_blank"
+    );
+
+    // Handle Submission in New Window
+    window.handleFormSubmission = function () {
+      submitBtn.disabled = true;
+      spinner.style.display = "inline-block";
+      btnText.textContent = "Generating...";
+
+      const formData = new FormData(form);
+      const nameInput = document.getElementById("name").value.trim();
+
+      fetch(form.action, {
+        method: form.method,
+        body: formData,
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Server error, please try again.");
+          }
+          return response.blob();
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("Server error, please try again.");
-            }
-            return response.blob(); // Expecting a PDF file as response
+        .then((blob) => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `${nameInput}_Progress_Report.pdf`;
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
         })
-        .then(blob => {
-            // Create a download link for the generated PDF
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = `${nameInput}_Progress_Report.pdf`;
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-        })
-        .catch(error => {
-            alert("Error: " + error.message);
+        .catch((error) => {
+          alert("Error: " + error.message);
         })
         .finally(() => {
-            // Re-enable button, hide spinner, and restore text
-            submitBtn.disabled = false;
-            spinner.style.display = "none";
-            btnText.textContent = "Generate Report"; // Restore text
+          submitBtn.disabled = false;
+          spinner.style.display = "none";
+          btnText.textContent = "Generate Report";
         });
-    });
+    };
+  }
 });

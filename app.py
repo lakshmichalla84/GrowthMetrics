@@ -45,8 +45,6 @@ def generate_pdf(student_data, ai_summaries, activity_recommendations):
     basic_info_fields = [
         ('Child\'s Name', 'name'),
         ('Age', 'age'),
-        ('Date of Birth', 'dob'), 
-        ('Class', 'class'), 
         ('Date of Assessment', 'doa'), 
         ('Assessor\'s Name', 'assessor'), 
     ]
@@ -111,6 +109,10 @@ def generate_pdf(student_data, ai_summaries, activity_recommendations):
 def index():
     return render_template('index.html')
 
+@app.route('/preview')
+def form_preview():
+    return render_template('form-preview.html')
+
 
 @app.route('/get_milestones', methods=['GET'])
 def get_milestones():
@@ -149,7 +151,7 @@ def generate_report():
         student_data = request.form.to_dict()
         name = student_data.get('name', '')
         age = student_data.get('age', '')
-        class_name = student_data.get('class', '')
+        # class_name = student_data.get('class', '')
         delay = student_data.get('delay', '')
 
         # Fetching all milestones for the given age from MongoDB
@@ -184,7 +186,7 @@ def generate_report():
 
         Child's Name: {name}
         Age: {age}
-        Class: {class_name}
+        
         
         Below are {name}'s assessment results:
 
@@ -197,7 +199,7 @@ def generate_report():
         4. **Highlight 1-2 skills needing improvement** (scores of 1) and clearly explain why improvement is needed.
         5. **If a child scores mostly 1s**, emphasize that **significant support and intervention** are required.
         6. Use **simple and clear language** so parents can easily understand.
-        7. Keep each section **concise (50-75 words per area)**.
+        7. Keep each section **concise (90-100 words per area)**.
         8. Maintain an **encouraging tone**, but do not avoid mentioning challenges when they exist.
 
         ### Score Interpretation:
@@ -235,7 +237,7 @@ def generate_report():
     - Include both home and school activities
     - Suggest concrete, age-appropriate exercises
     - Format as bullet points using simple language
-    - Max 1 sentence per recommendation
+    - Max 3 sentence per recommendation
     - Keep it free from placeholders or bullets or symbols like * or -, give plain text
 
     Example:
