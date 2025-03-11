@@ -193,17 +193,3 @@ Contributions are Welcome! To contribute:
 
 5. Open a Pull Request for review.
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/PriyanshuLathi/AI-Powered-Student-Progress-Report-Generator/blob/main/LICENSE) file for details.
-
-## Contact
-
-For any questions or feedback:
-
-- **LinkedIn**: [Priyanshu Lathi](https://www.linkedin.com/in/priyanshu-lathi)
-- **GitHub**: [Priyanshu Lathi](https://github.com/PriyanshuLathi)
-
-## Authors
-
-- **Priyanshu Lathi**
