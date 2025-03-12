@@ -31,17 +31,21 @@
   <!--  JavaScript to Handle Preview Data -->
   <script>
     window.onload = function () {
-      const urlParams = new URLSearchParams(window.location.search);
-      const data = JSON.parse(decodeURIComponent(urlParams.get('data')));
-      document.getElementById("preview-content").innerHTML = data.previewContent;
-    };
+  const previewContent = sessionStorage.getItem("previewData");
+  if (previewContent) {
+    document.getElementById("preview-content").innerHTML = previewContent;
+  } else {
+    document.getElementById("preview-content").innerHTML = "<p>No preview data available.</p>";
+  }
+};
 
-    function submitForm() {
-      // Trigger form submission in parent window
-      window.opener.handleFormSubmission();
-      // Close the preview tab
-      window.close();
-    }
+function submitForm() {
+  // Trigger form submission in parent window
+  window.opener.handleFormSubmission();
+  // Close the preview tab
+  window.close();
+}
+
   </script>
 </body>
 </html>

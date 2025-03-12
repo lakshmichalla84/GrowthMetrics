@@ -244,11 +244,9 @@ document.addEventListener("DOMContentLoaded", function () {
   // ===================================
   // Function to Preview the Form
   // ===================================
-  function showPreviewAndConfirm() {
+function showPreviewAndConfirm() {
     const name = document.getElementById("name").value;
     const age = document.getElementById("age").value;
-    // const dob = document.getElementById("dob").value;
-    // const studentClass = document.getElementById("class").value;
     const doa = document.getElementById("doa").value;
     const assessor = document.getElementById("assessor").value;
     const env = document.getElementById("env").value;
@@ -274,7 +272,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const previewContent = `
     <p><strong>Name:</strong> ${name}</p>
     <p><strong>Age:</strong> ${age}</p>
-   
     <p><strong>Date of Assessment:</strong> ${doa}</p>
     <p><strong>Assessor Name:</strong> ${assessor}</p>
     <p><strong>Environment:</strong> ${env}</p>
@@ -284,11 +281,12 @@ document.addEventListener("DOMContentLoaded", function () {
     ${milestoneSummary || "No milestones added."}
   `;
 
-    // Send data to new preview page
-    const previewWindow = window.open(
-      `/preview?data=${encodeURIComponent(JSON.stringify({ previewContent }))}`,
-      "_blank"
-    );
+    // Store preview content in sessionStorage
+    sessionStorage.setItem("previewData", previewContent);
+
+    // Open preview page
+    window.open("/preview", "_blank");
+
 
     // Handle Submission in New Window
     window.handleFormSubmission = function () {
