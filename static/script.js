@@ -244,7 +244,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // ===================================
   // Function to Preview the Form
   // ===================================
-function showPreviewAndConfirm() {
+  function showPreviewAndConfirm() {
     const name = document.getElementById("name").value;
     const age = document.getElementById("age").value;
     const doa = document.getElementById("doa").value;
@@ -286,7 +286,6 @@ function showPreviewAndConfirm() {
 
     // Open preview page
     window.open("/preview", "_blank");
-
 
     // Handle Submission in New Window
     window.handleFormSubmission = function () {
