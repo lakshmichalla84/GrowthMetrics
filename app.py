@@ -145,7 +145,7 @@ def get_milestones():
         return jsonify({"error": "Invalid age format"}), 400
 
 
-@app.route('/generate_report', methods=['POST'])
+@app.route('/generate_report', methods=['POST','GET'])
 def generate_report():
     try:
         student_data = request.form.to_dict()
@@ -199,7 +199,7 @@ def generate_report():
         4. **Highlight 1-2 skills needing improvement** (scores of 1) and clearly explain why improvement is needed.
         5. **If a child scores mostly 1s**, emphasize that **significant support and intervention** are required.
         6. Use **simple and clear language** so parents can easily understand.
-        7. Keep each section **concise (90-100 words per area)**.
+        7. Keep each section **concise (50-75 words per area)**.
         8. Maintain an **encouraging tone**, but do not avoid mentioning challenges when they exist.
 
         ### Score Interpretation:
@@ -263,4 +263,4 @@ def generate_report():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
