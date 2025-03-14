@@ -11,5 +11,12 @@ COPY . .
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
-# Run the application (modify based on your project)
-CMD ["python", "app.py"]
+# Expose port 5000
+EXPOSE 5000
+
+# Run the Flask app
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:app"]
+
+    
+
+
