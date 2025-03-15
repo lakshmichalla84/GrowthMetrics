@@ -15,7 +15,7 @@ RUN pip install --upgrade pip && \
 EXPOSE 5000
 
 # Run the Flask app
- CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "--log-level=debug", "--timeout", "0", "--preload", "your_app:app"]
+ CMD ["python","app.py"]
 
 
     
